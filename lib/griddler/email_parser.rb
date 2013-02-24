@@ -21,20 +21,22 @@ module EmailParser
   end
 
   def self.extract_reply_body(body)
-    if body
-      delimeter = Griddler.configuration.reply_delimiter
-      body.split(delimeter).first.
-        split(/^\s*[-]+\s*Original Message\s*[-]+\s*$/).first.
-        split(/^\s*--\s*$/).first.
-        gsub(/On.*wrote:/, '').
-        split(/[\r]*\n/).reject do |line|
-          line =~ /^\s*>/ ||
-            line =~ /^\s*Sent from my /
-        end.
-        join("\n").
-        gsub(/^\s*On.*\r?\n?\s*.*\s*wrote:$/,'').
-        strip
+    if body.blank?
+      return ""
     end
+
+    delimeter = Griddler.configuration.reply_delimiter
+    body.split(delimeter).first.
+      split(/^\s*[-]+\s*Original Message\s*[-]+\s*$/).first.
+      split(/^\s*--\s*$/).first.
+      gsub(/On.*wrote:/, '').
+      split(/[\r]*\n/).reject do |line|
+        line =~ /^\s*>/ ||
+          line =~ /^\s*Sent from my /
+      end.
+      join("\n").
+      gsub(/^\s*On.*\r?\n?\s*.*\s*wrote:$/,'').
+      strip
   end
 
   private
